@@ -4,7 +4,7 @@ from typing import Any
 from agents import Agent, Runner, custom_span
 from github import Github
 
-from src.constants import CUSTOM_PROMPT, GITHUB_TOKEN, MAX_TURNS, MODEL
+from src.constants import CUSTOM_PROMPT, GITHUB_TOKEN, MAX_TURNS, MODEL, OPENAI_BASE_URL
 from src.context.github_context import GithubContext
 from src.github_agents.pr_review_agent import create_pr_review_agent
 
@@ -22,7 +22,9 @@ class PRReviewAction:
             event: The GitHub event data
         """
         logger.info("Initializing PR Review Action")
-        self.agent: Agent = create_pr_review_agent(model=MODEL, custom_prompt=CUSTOM_PROMPT)
+        self.agent: Agent = create_pr_review_agent(
+            model=MODEL, custom_prompt=CUSTOM_PROMPT, base_url=OPENAI_BASE_URL
+        )
         self.event = event
 
     async def run(self) -> None:

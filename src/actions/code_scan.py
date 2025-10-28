@@ -8,7 +8,7 @@ from typing import Any
 from agents import Runner, custom_span
 from github import Github
 
-from src.constants import CUSTOM_PROMPT, GITHUB_TOKEN, MAX_TURNS, MODEL
+from src.constants import CUSTOM_PROMPT, GITHUB_TOKEN, MAX_TURNS, MODEL, OPENAI_BASE_URL
 from src.context.github_context import GithubContext
 from src.github_agents.code_scan_agent import create_code_scan_agent
 
@@ -26,7 +26,9 @@ class CodeScanAction:
             event: The GitHub event data
         """
         logger.info("Initializing Code Scan Action")
-        self.agent = create_code_scan_agent(model=MODEL, custom_prompt=CUSTOM_PROMPT)
+        self.agent = create_code_scan_agent(
+            model=MODEL, custom_prompt=CUSTOM_PROMPT, base_url=OPENAI_BASE_URL
+        )
         self.event = event
 
     async def run(self) -> None:

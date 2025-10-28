@@ -3,6 +3,7 @@ Issue Analysis agent using OpenAI Agents SDK.
 """
 
 from agents import Agent, ComputerTool, FileSearchTool, FunctionTool, WebSearchTool
+from agents.models.openai_provider import OpenAIProvider
 from pydantic import BaseModel, Field
 
 from src.tools.github_function_tools import (
@@ -40,13 +41,16 @@ class IssueAnalysisResponse(BaseModel):
 
 
 def create_issue_analyze_agent(
-    model: str = "gpt-4o-mini", custom_prompt: str | None = None
+    model: str = "gpt-4o-mini",
+    custom_prompt: str | None = None,
+    base_url: str | None = None,
 ) -> Agent:
     """Create an Issue Analysis agent with issue-specific tools.
 
     Args:
         model: Model name to use
         custom_prompt: Custom prompt override
+        base_url: The base URL for the OpenAI API
 
     Returns:
         Configured Agent instance
@@ -96,4 +100,5 @@ def create_issue_analyze_agent(
         tools=tools,
         model=model,
         output_type=IssueAnalysisResponse,
+        run_config={"model_provider": OpenAIProvider(base_url=base_url)},
     )

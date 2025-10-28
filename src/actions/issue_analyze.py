@@ -8,7 +8,7 @@ from typing import Any
 from agents import Runner, custom_span
 from github import Github
 
-from src.constants import CUSTOM_PROMPT, GITHUB_TOKEN, MAX_TURNS, MODEL
+from src.constants import CUSTOM_PROMPT, GITHUB_TOKEN, MAX_TURNS, MODEL, OPENAI_BASE_URL
 from src.context.github_context import GithubContext
 from src.github_agents.issue_analyze_agent import create_issue_analyze_agent
 
@@ -25,7 +25,9 @@ class IssueAnalyzeAction:
             event: The GitHub event data
         """
         logger.info("Initializing Issue Analysis Action")
-        self.agent = create_issue_analyze_agent(model=MODEL, custom_prompt=CUSTOM_PROMPT)
+        self.agent = create_issue_analyze_agent(
+            model=MODEL, custom_prompt=CUSTOM_PROMPT, base_url=OPENAI_BASE_URL
+        )
         self.event = event
 
     async def run(self) -> None:

@@ -3,6 +3,7 @@ Code Scan agent using OpenAI Agents SDK.
 """
 
 from agents import Agent, ComputerTool, FileSearchTool, FunctionTool, WebSearchTool
+from agents.models.openai_provider import OpenAIProvider
 from pydantic import BaseModel, Field
 
 from src.tools.github_function_tools import (
@@ -34,12 +35,17 @@ class CodeScanResponse(BaseModel):
     recommendations: list[str] = Field(description="Overall recommendations for code improvements")
 
 
-def create_code_scan_agent(model: str = "gpt-4o-mini", custom_prompt: str | None = None) -> Agent:
+def create_code_scan_agent(
+    model: str = "gpt-4o-mini",
+    custom_prompt: str | None = None,
+    base_url: str | None = None,
+) -> Agent:
     """Create a Code Scan agent for analyzing repository code.
 
     Args:
         model: Model name to use
         custom_prompt: Custom prompt override
+        base_url: The base URL for the OpenAI API
 
     Returns:
         Configured Agent instance
@@ -77,6 +83,9 @@ def create_code_scan_agent(model: str = "gpt-4o-mini", custom_prompt: str | None
         search_code,
         list_repository_files,
     ]
+
+    provider = OpenAIProvider(base_url=base_url)
+    model = provider.get_model(model)
 
     return Agent(
         name="Code Scan Agent",

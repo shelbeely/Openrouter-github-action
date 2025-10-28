@@ -15,7 +15,6 @@ classifiers = [
     "Intended Audience :: Developers",
     "Operating System :: OS Independent",
     "Topic :: Software Development :: Libraries :: Python Modules",
-    "License :: OSI Approved :: MIT License"
 ]
 dependencies = [
     "PyGithub==2.6.1",

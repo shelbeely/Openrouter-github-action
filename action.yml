@@ -26,6 +26,10 @@ inputs:
     description: 'Maximum turns for the AI'
     required: false
     default: '30'
+  openai-base-url:
+    description: 'Custom base URL for OpenAI API'
+    required: false
+    default: 'https://openrouter.ai/api/v1'
 
 
 runs:
@@ -38,3 +42,4 @@ runs:
     MODEL: ${{ inputs.model }}
     CUSTOM_PROMPT: ${{ inputs.custom-prompt }}
     MAX_TURNS: ${{ inputs.max-turns }}
+    OPENAI_BASE_URL: ${{ inputs.openai-base-url }}
