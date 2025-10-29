@@ -80,7 +80,6 @@ async def async_main():
                 repo_url = os.environ.get("INPUT_REPO_URL")
                 target_doc_set = os.environ.get("INPUT_TARGET_DOC_SET")
                 changelog_agent = os.environ.get("INPUT_CHANGELOG_AGENT")
-                doc_mode = os.environ.get("INPUT_DOC_MODE")
                 doc_audience = os.environ.get("INPUT_DOC_AUDIENCE")
                 doc_flavor = os.environ.get("INPUT_DOC_FLAVOR")
                 enable_repo_signals = os.environ.get("INPUT_ENABLE_REPO_SIGNALS")
@@ -89,8 +88,20 @@ async def async_main():
                     logger.fatal("INPUT_REPO_URL input not provided")
                     sys.exit(1)
 
-                manager = DocGenManager(repo_url, target_doc_set, changelog_agent, doc_mode, doc_audience, doc_flavor, enable_repo_signals, GITHUB_TOKEN)
+                manager = DocGenManager(repo_url, target_doc_set, changelog_agent, doc_audience, doc_flavor, enable_repo_signals, GITHUB_TOKEN)
                 await manager.run()
+            elif ACTION_TYPE == "image-gen":
+                from src.agents.image_generator_agent import get_image_generator_agent
+                import os
+
+                prompt = os.environ.get("INPUT_PROMPT")
+                if not prompt:
+                    logger.fatal("INPUT_PROMPT input not provided")
+                    sys.exit(1)
+
+                agent = get_image_generator_agent()
+                response = await agent(prompt)
+                logger.info(f"Image generated: {response.text}")
             else:
                 logger.error(f"Unknown action type: {ACTION_TYPE}")
                 sys.exit(1)

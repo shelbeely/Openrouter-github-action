@@ -7,7 +7,7 @@ branding:
 
 inputs:
   action-type:
-    description: 'Type of action to perform (pr-review, issue-analyze, code-scan)'
+    description: 'Type of action to perform (pr-review, issue-analyze, code-scan, doc-gen, image-gen)'
     required: true
   openai-api-key:
     description: 'OpenAI API key'
@@ -41,10 +41,6 @@ inputs:
     description: '(doc-gen only) Whether to run the changelog agent.'
     required: false
     default: 'false'
-  doc_mode:
-    description: '(doc-gen only) The documentation mode to use. Options: `Getting Started`, `Task Guides`, `API Reference`, `Concepts`, `Changelog`, `FAQ`, `Troubleshooting`, `Diagrams`, `Contributor Guide`.'
-    required: false
-    default: 'Concepts'
   doc_audience:
     description: '(doc-gen only) The target audience for the documentation.'
     required: false
@@ -57,6 +53,9 @@ inputs:
     description: '(doc-gen only) Whether to mine Issues, PRs, and Discussions for real-world tasks.'
     required: false
     default: 'false'
+  prompt:
+    description: '(image-gen only) The prompt to use for image generation.'
+    required: false
 
 
 runs:
@@ -73,7 +72,7 @@ runs:
     INPUT_REPO_URL: ${{ inputs.repo_url }}
     INPUT_TARGET_DOC_SET: ${{ inputs.target_doc_set }}
     INPUT_CHANGELOG_AGENT: ${{ inputs.changelog_agent }}
-    INPUT_DOC_MODE: ${{ inputs.doc_mode }}
     INPUT_DOC_AUDIENCE: ${{ inputs.doc_audience }}
     INPUT_DOC_FLAVOR: ${{ inputs.doc_flavor }}
     INPUT_ENABLE_REPO_SIGNALS: ${{ inputs.enable_repo_signals }}
+    INPUT_PROMPT: ${{ inputs.prompt }}

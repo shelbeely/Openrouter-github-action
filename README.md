@@ -137,7 +137,7 @@ jobs:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           repo_url: "https://github.com/your/repo"
-          doc_mode: "API Reference"
+          target_doc_set: "API Reference,Getting Started"
           doc_audience: "advanced"
           doc_flavor: "Docusaurus"
           changelog_agent: "true"
@@ -146,19 +146,42 @@ jobs:
 
 This action generates documentation for a given repository. It can create API references, tutorials, and more.
 
+### Image Generation
+
+```yaml
+name: AI Image Generation
+
+on:
+  workflow_dispatch:
+
+jobs:
+  image-gen:
+    runs-on: ubuntu-latest
+    steps:
+      - name: AI Image Generation
+        uses: aguirreibarra/ai-github-action@main
+        with:
+          action-type: image-gen
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          prompt: "A cute cat programming in Python."
+```
+
+This action generates an image from a prompt using DALL-E.
+
 ## ⚙️ Configuration Options
 
 | Input | Description | Required | Default |
 |-------|-------------|----------|---------|
-| `action-type` | Type of action (pr-review, issue-analyze, code-scan, doc-gen) | Yes | - |
+| `action-type` | Type of action (pr-review, issue-analyze, code-scan, doc-gen, image-gen) | Yes | - |
 | `openai-api-key` | OpenAI API key | Yes | - |
 | `github-token` | GitHub token for API access | Yes | - |
 | `repo_url` | **(doc-gen only)** The URL of the repository to document. | Yes | - |
-| `doc_mode` | **(doc-gen only)** The documentation mode to use. Options: `Getting Started`, `Task Guides`, `API Reference`, `Concepts`, `Changelog`, `FAQ`, `Troubleshooting`, `Diagrams`, `Contributor Guide`. | No | `Concepts` |
+| `target_doc_set` | **(doc-gen only)** A comma-separated list of the documentation to generate. Options: `Getting Started`, `Task Guides`, `API Reference`, `Concepts`, `Changelog`, `FAQ`, `Troubleshooting`, `Diagrams`, `Contributor Guide`. | No | `API Reference` |
 | `doc_audience` | **(doc-gen only)** The target audience for the documentation. Options: `beginner`, `advanced`. | No | `beginner` |
 | `doc_flavor` | **(doc-gen only)** The output flavor for the documentation. Options: `MkDocs`, `Docusaurus`, `Sphinx`. | No | `MkDocs` |
 | `changelog_agent`| **(doc-gen only)** Whether to run the changelog agent. | No | `false` |
 | `enable_repo_signals` | **(doc-gen only)** Whether to mine Issues, PRs, and Discussions for real-world tasks. | No | `false` |
+| `prompt` | **(image-gen only)** The prompt to use for image generation. | Yes | - |
 | `model` | OpenAI model to use | No | gpt-4o-mini |
 | `max-turns` | Maximum turns for the AI | No | 30 |
 | `custom-prompt` | Custom system prompt for the AI | No | - |

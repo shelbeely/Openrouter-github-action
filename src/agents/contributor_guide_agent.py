@@ -1,11 +1,18 @@
 # src/agents/contributor_guide_agent.py
 
-class ContributorGuideAgent:
-    def run(self, outline, repo_path):
+from agents import FunctionTool
+
+class ContributorGuideTool(FunctionTool):
+    def __init__(self, repo_path):
+        self.repo_path = repo_path
+
+    async def __call__(self) -> str:
         """
         Generates a contributor guide.
         """
-        contributing_guide = """
+        # In a real implementation, we would analyze the repo and generate
+        # a contributor guide. For now, we'll just return a placeholder.
+        return """
 # Contributing
 
 We welcome contributions! Please follow these guidelines:
@@ -15,5 +22,3 @@ We welcome contributions! Please follow these guidelines:
 3.  Make your changes.
 4.  Submit a pull request.
 """
-        outline["sections"].append({"title": "Contributing Guide", "pages": [{"title": "CONTRIBUTING", "content": contributing_guide}]})
-        return outline

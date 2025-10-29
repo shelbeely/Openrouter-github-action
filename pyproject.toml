@@ -25,6 +25,7 @@ dependencies = [
     "GitPython",
     "PyYAML",
     "openai",
+    "pycg",
 ]
 
 [project.optional-dependencies]
