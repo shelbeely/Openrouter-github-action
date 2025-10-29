@@ -21,6 +21,7 @@ class FilesystemReader:
                 if extensions is None or file.endswith(tuple(extensions)):
                     yield os.path.join(root, file)
 
+import os
 from tree_sitter_languages import get_language, get_parser
 
 class Parser:
@@ -31,12 +32,47 @@ class Parser:
         with open(filepath, 'r') as f:
             code = f.read()
 
-        language = get_language(filepath)
-        parser = get_parser(language.name)
-        tree = parser.parse(bytes(code, "utf8"))
-        return tree
+        lang = self._get_language_from_filepath(filepath)
+        if lang:
+            parser = get_parser(lang)
+            tree = parser.parse(bytes(code, "utf8"))
+            return tree
+        return None
+
+    def _get_language_from_filepath(self, filepath):
+        extension_map = {
+            ".py": "python",
+            ".js": "javascript",
+            ".ts": "typescript",
+            ".java": "java",
+            ".go": "go",
+            ".rs": "rust",
+            ".c": "c",
+            ".cpp": "cpp",
+        }
+        _, extension = os.path.splitext(filepath)
+        return extension_map.get(extension)
+
+import yaml
 
 class Formatter:
-    def run(self, docs):
-        # Logic to format the documentation
-        pass
+    def run(self, outline, output_dir):
+        raise NotImplementedError
+
+class MkDocsFormatter(Formatter):
+    def run(self, outline, output_dir):
+        """
+        Generates an mkdocs.yml file and organizes the documentation.
+        """
+        mkdocs_config = {
+            "site_name": "My Docs",
+            "nav": [],
+        }
+
+        for section in outline["sections"]:
+            for page in section["pages"]:
+                filename = f"{page['title'].replace(' ', '_').lower()}.md"
+                mkdocs_config["nav"].append({page["title"]: filename})
+
+        with open(os.path.join(output_dir, "mkdocs.yml"), "w") as f:
+            yaml.dump(mkdocs_config, f)

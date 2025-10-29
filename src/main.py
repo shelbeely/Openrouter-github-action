@@ -80,12 +80,16 @@ async def async_main():
                 repo_url = os.environ.get("INPUT_REPO_URL")
                 target_doc_set = os.environ.get("INPUT_TARGET_DOC_SET")
                 changelog_agent = os.environ.get("INPUT_CHANGELOG_AGENT")
+                doc_mode = os.environ.get("INPUT_DOC_MODE")
+                doc_audience = os.environ.get("INPUT_DOC_AUDIENCE")
+                doc_flavor = os.environ.get("INPUT_DOC_FLAVOR")
+                enable_repo_signals = os.environ.get("INPUT_ENABLE_REPO_SIGNALS")
 
                 if not repo_url:
                     logger.fatal("INPUT_REPO_URL input not provided")
                     sys.exit(1)
 
-                manager = DocGenManager(repo_url, target_doc_set, changelog_agent)
+                manager = DocGenManager(repo_url, target_doc_set, changelog_agent, doc_mode, doc_audience, doc_flavor, enable_repo_signals, GITHUB_TOKEN)
                 manager.run()
             else:
                 logger.error(f"Unknown action type: {ACTION_TYPE}")
