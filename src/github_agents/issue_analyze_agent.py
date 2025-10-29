@@ -2,7 +2,13 @@
 Issue Analysis agent using OpenAI Agents SDK.
 """
 
-from agents import Agent, ComputerTool, FileSearchTool, FunctionTool, WebSearchTool
+from agents import (
+    Agent,
+    ComputerTool,
+    FileSearchTool,
+    FunctionTool,
+    WebSearchTool,
+)
 from agents.models.openai_provider import OpenAIProvider
 from pydantic import BaseModel, Field
 
@@ -70,6 +76,8 @@ def create_issue_analyze_agent(
     Be thorough in your investigation and provide specific recommendations based on 
     the issue content and repository context.
 
+    Use the WebSearchTool to research the issue online for additional context or solutions.
+
     Use the provided tools to investigate root cause or possible solutions and
     provide a detailed insights.
 
@@ -92,6 +100,7 @@ def create_issue_analyze_agent(
         list_issue_labels,
         search_code,
         list_repository_files,
+        WebSearchTool(),
     ]
 
     provider = OpenAIProvider(base_url=base_url)

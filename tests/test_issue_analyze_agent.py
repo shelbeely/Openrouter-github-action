@@ -57,8 +57,9 @@ def test_issue_analysis_response_model():
     assert response.next_steps == ["Fix the bug", "Add tests"]
 
 
+@patch("src.github_agents.issue_analyze_agent.WebSearchTool")
 @patch("src.github_agents.issue_analyze_agent.OpenAIProvider")
-def test_create_issue_analyze_agent(mock_provider):
+def test_create_issue_analyze_agent(mock_provider, mock_web_search_tool):
     """Test that the agent creation function works with the default model."""
     mock_model = MagicMock(spec=Model)
     mock_provider.return_value.get_model.return_value = mock_model
@@ -66,6 +67,8 @@ def test_create_issue_analyze_agent(mock_provider):
     assert agent.name == "Issue Analysis Agent"
     assert agent.model == mock_model
     assert agent.output_type == IssueAnalysisResponse
+    assert len(agent.tools) == 11
+    assert mock_web_search_tool.return_value in agent.tools
 
     # Test with custom model and prompt
     custom_model_name = "gpt-4o"
