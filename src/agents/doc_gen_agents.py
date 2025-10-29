@@ -90,26 +90,31 @@ class GuideAgent:
                     outline["sections"].append({"title": "Guide", "pages": [{"title": "README", "content": content}]})
         return outline
 
-class GettingStartedAgent:
-    def run(self, outline, repo_path, doc_audience="beginner"):
+from agents import FunctionTool
+from src.utils import is_thin_content
+
+class GettingStartedTool(FunctionTool):
+    def __init__(self, repo_path):
+        self.repo_path = repo_path
+
+    async def __call__(self, doc_audience: str = "beginner") -> str:
         """
         Generates a Getting Started guide by looking for common files.
         """
         getting_started_content = ""
-        for root, _, files in os.walk(repo_path):
+        found_files = []
+        for root, _, files in os.walk(self.repo_path):
             for file in files:
                 if file.lower() in ["install.md", "contributing.md", "readme.md"]:
                     filepath = os.path.join(root, file)
+                    found_files.append(filepath)
                     with open(filepath, 'r') as f:
                         getting_started_content += f.read() + "\n\n"
 
-        if getting_started_content:
-            title = "Getting Started"
-            if doc_audience == "advanced":
-                title = "Getting Started (Advanced)"
+        if is_thin_content(getting_started_content):
+            getting_started_content += f"\n\n**TODO:** This document is incomplete. Please add more information to the following files: {', '.join(found_files)}"
 
-            outline["sections"].append({"title": title, "pages": [{"title": title, "content": getting_started_content}]})
-        return outline
+        return getting_started_content
 
 class TaskGuidesAgent:
     def run(self, outline, doc_audience="beginner"):
@@ -193,7 +198,7 @@ class ChangelogAgent:
 import os
 import yaml
 
-from src.tools.doc_gen_tools import MkDocsFormatter
+from src.tools.doc_gen_tools import MkDocsFormatter, DocusaurusFormatter, SphinxFormatter
 
 class EditorAgent:
     def run(self, outline, output_dir="docs", doc_flavor="MkDocs"):
@@ -216,6 +221,12 @@ class EditorAgent:
                     f.write("---\n")
                     f.write(page["content"])
 
-        if doc_flavor == "MkDocs":
-            formatter = MkDocsFormatter()
+        formatters = {
+            "MkDocs": MkDocsFormatter(),
+            "Docusaurus": DocusaurusFormatter(),
+            "Sphinx": SphinxFormatter(),
+        }
+
+        if doc_flavor in formatters:
+            formatter = formatters[doc_flavor]
             formatter.run(outline, output_dir)

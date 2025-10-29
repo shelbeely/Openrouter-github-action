@@ -154,7 +154,7 @@ This action generates documentation for a given repository. It can create API re
 | `openai-api-key` | OpenAI API key | Yes | - |
 | `github-token` | GitHub token for API access | Yes | - |
 | `repo_url` | **(doc-gen only)** The URL of the repository to document. | Yes | - |
-| `doc_mode` | **(doc-gen only)** The documentation mode to use. Options: `Getting Started`, `Task Guides`, `API Reference`, `Concepts`, `Changelog`, `FAQ`, `Troubleshooting`. | No | `Concepts` |
+| `doc_mode` | **(doc-gen only)** The documentation mode to use. Options: `Getting Started`, `Task Guides`, `API Reference`, `Concepts`, `Changelog`, `FAQ`, `Troubleshooting`, `Diagrams`, `Contributor Guide`. | No | `Concepts` |
 | `doc_audience` | **(doc-gen only)** The target audience for the documentation. Options: `beginner`, `advanced`. | No | `beginner` |
 | `doc_flavor` | **(doc-gen only)** The output flavor for the documentation. Options: `MkDocs`, `Docusaurus`, `Sphinx`. | No | `MkDocs` |
 | `changelog_agent`| **(doc-gen only)** Whether to run the changelog agent. | No | `false` |

@@ -90,7 +90,7 @@ async def async_main():
                     sys.exit(1)
 
                 manager = DocGenManager(repo_url, target_doc_set, changelog_agent, doc_mode, doc_audience, doc_flavor, enable_repo_signals, GITHUB_TOKEN)
-                manager.run()
+                await manager.run()
             else:
                 logger.error(f"Unknown action type: {ACTION_TYPE}")
                 sys.exit(1)

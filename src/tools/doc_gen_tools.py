@@ -76,3 +76,23 @@ class MkDocsFormatter(Formatter):
 
         with open(os.path.join(output_dir, "mkdocs.yml"), "w") as f:
             yaml.dump(mkdocs_config, f)
+
+class DocusaurusFormatter(Formatter):
+    def run(self, outline, output_dir):
+        """
+        Generates a docusaurus.config.js file and organizes the documentation.
+        """
+        # In a real implementation, we would generate a full docusaurus config.
+        # For now, we'll just create a placeholder file.
+        with open(os.path.join(output_dir, "docusaurus.config.js"), "w") as f:
+            f.write("module.exports = { title: 'My Docs' };")
+
+class SphinxFormatter(Formatter):
+    def run(self, outline, output_dir):
+        """
+        Generates a conf.py file and organizes the documentation.
+        """
+        # In a real implementation, we would generate a full sphinx config.
+        # For now, we'll just create a placeholder file.
+        with open(os.path.join(output_dir, "conf.py"), "w") as f:
+            f.write("project = 'My Docs'")

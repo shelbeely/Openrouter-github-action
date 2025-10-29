@@ -3,7 +3,8 @@ import os
 import shutil
 import tempfile
 import unittest
-from unittest.mock import MagicMock, patch
+import asyncio
+from unittest.mock import MagicMock, patch, AsyncMock
 
 from src.doc_gen_manager import DocGenManager
 
@@ -25,13 +26,17 @@ class TestDocGenManager(unittest.TestCase):
     @patch("src.doc_gen_manager.RepoFetcher")
     @patch("src.doc_gen_manager.tempfile.mkdtemp")
     @patch("src.doc_gen_manager.shutil.rmtree")
-    def test_run(self, mock_rmtree, mock_mkdtemp, MockRepoFetcher):
+    @patch("src.doc_gen_manager.Agent.__call__", new_callable=AsyncMock)
+    def test_run(self, mock_agent_call, mock_rmtree, mock_mkdtemp, MockRepoFetcher):
         # Mock the RepoFetcher to avoid cloning a real repository
         mock_repo_fetcher = MockRepoFetcher.return_value
         mock_repo_fetcher.run.return_value = None
 
         # Mock tempfile.mkdtemp to return our test directory
         mock_mkdtemp.return_value = self.test_dir
+
+        # Mock the Agent.__call__ method to return a dummy response
+        mock_agent_call.return_value = MagicMock(text="This is a dummy response from the AI agent.")
 
         # Create a dummy file in the test directory
         dummy_file_path = os.path.join(self.test_dir, "dummy.py")
@@ -51,7 +56,7 @@ class TestDocGenManager(unittest.TestCase):
         )
 
         # Run the manager
-        manager.run()
+        asyncio.run(manager.run())
 
         # Check if the output directory was created
         self.assertTrue(os.path.exists(self.output_dir))

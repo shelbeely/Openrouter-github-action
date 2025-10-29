@@ -42,7 +42,7 @@ inputs:
     required: false
     default: 'false'
   doc_mode:
-    description: '(doc-gen only) The documentation mode to use.'
+    description: '(doc-gen only) The documentation mode to use. Options: `Getting Started`, `Task Guides`, `API Reference`, `Concepts`, `Changelog`, `FAQ`, `Troubleshooting`, `Diagrams`, `Contributor Guide`.'
     required: false
     default: 'Concepts'
   doc_audience:

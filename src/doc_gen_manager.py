@@ -2,7 +2,11 @@
 
 import tempfile
 import shutil
-from src.agents.doc_gen_agents import OutlineAgent, ApiRefAgent, GuideAgent, GlossaryAgent, ChangelogAgent, EditorAgent, GettingStartedAgent, TaskGuidesAgent, ConceptsAgent, FAQAgent, TroubleshootingAgent
+import asyncio
+from agents import Agent
+from src.agents.doc_gen_agents import OutlineAgent, ApiRefAgent, GuideAgent, GlossaryAgent, ChangelogAgent, EditorAgent, GettingStartedTool, TaskGuidesAgent, ConceptsAgent, FAQAgent, TroubleshootingAgent
+from src.agents.diagrammer_agent import DiagrammerAgent
+from src.agents.contributor_guide_agent import ContributorGuideAgent
 from src.tools.doc_gen_tools import RepoFetcher
 from src.tools.repo_signals import RepoSignalsTool
 
@@ -17,7 +21,7 @@ class DocGenManager:
         self.enable_repo_signals = enable_repo_signals.lower() == 'true'
         self.github_token = github_token
 
-    def run(self):
+    async def run(self):
         """
         Orchestrates the documentation generation workflow.
         """
@@ -49,21 +53,28 @@ class DocGenManager:
             worker_agents = {
                 "API Reference": ApiRefAgent(),
                 "Tutorials": GuideAgent(),
-                "Getting Started": GettingStartedAgent(),
+                "Getting Started": Agent(
+                    name="Getting Started Agent",
+                    tools=[GettingStartedTool(repo_path)],
+                    instructions=f"You are a technical writer generating a 'Getting Started' guide for a software project. The target audience is {self.doc_audience}.",
+                ),
                 "Glossary": GlossaryAgent(),
                 "Task Guides": TaskGuidesAgent(),
                 "Concepts": ConceptsAgent(),
                 "FAQ": FAQAgent(),
                 "Troubleshooting": TroubleshootingAgent(),
+                "Diagrams": DiagrammerAgent(),
+                "Contributor Guide": ContributorGuideAgent(),
             }
 
             for doc_type in self.target_doc_set:
                 if doc_type in worker_agents:
                     agent = worker_agents[doc_type]
-                    if isinstance(agent, (GuideAgent, ApiRefAgent)):
+                    if isinstance(agent, Agent):
+                        response = await agent(f"Generate the content for the '{doc_type}' guide.")
+                        outline["sections"].append({"title": doc_type, "pages": [{"title": doc_type, "content": response.text}]})
+                    elif isinstance(agent, (GuideAgent, ApiRefAgent, DiagrammerAgent, ContributorGuideAgent)):
                         outline = agent.run(outline, repo_path)
-                    elif isinstance(agent, GettingStartedAgent):
-                        outline = agent.run(outline, repo_path, self.doc_audience)
                     else:
                         outline = agent.run(outline, self.doc_audience)
 
