@@ -118,13 +118,41 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
+### Documentation Generation
+
+```yaml
+name: AI Documentation Generation
+
+on:
+  workflow_dispatch:
+
+jobs:
+  doc-gen:
+    runs-on: ubuntu-latest
+    steps:
+      - name: AI Documentation Generation
+        uses: aguirreibarra/ai-github-action@main
+        with:
+          action-type: doc-gen
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repo_url: "https://github.com/your/repo"
+          target_doc_set: "api_ref,tutorials"
+          changelog_agent: "true"
+```
+
+This action generates documentation for a given repository. It can create API references, tutorials, and more.
+
 ## ⚙️ Configuration Options
 
 | Input | Description | Required | Default |
 |-------|-------------|----------|---------|
-| `action-type` | Type of action (pr-review, issue-analyze, code-scan) | Yes | - |
+| `action-type` | Type of action (pr-review, issue-analyze, code-scan, doc-gen) | Yes | - |
 | `openai-api-key` | OpenAI API key | Yes | - |
 | `github-token` | GitHub token for API access | Yes | - |
+| `repo_url` | **(doc-gen only)** The URL of the repository to document. | Yes | - |
+| `target_doc_set`| **(doc-gen only)** A comma-separated list of the target documentation set to generate. | No | `api_ref` |
+| `changelog_agent`| **(doc-gen only)** Whether to run the changelog agent. | No | `false` |
 | `model` | OpenAI model to use | No | gpt-4o-mini |
 | `max-turns` | Maximum turns for the AI | No | 30 |
 | `custom-prompt` | Custom system prompt for the AI | No | - |

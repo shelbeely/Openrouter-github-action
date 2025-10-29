@@ -1,0 +1,6 @@
+tree-sitter
+tree-sitter-languages
+gitpython
+PyYAML
+openai
+openai-agents

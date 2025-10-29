@@ -20,6 +20,11 @@ dependencies = [
     "PyGithub==2.6.1",
     "pydantic==2.10.6",
     "openai-agents==0.4.2",
+    "tree-sitter",
+    "tree-sitter-languages",
+    "GitPython",
+    "PyYAML",
+    "openai",
 ]
 
 [project.optional-dependencies]

@@ -73,6 +73,20 @@ async def async_main():
             elif ACTION_TYPE == "code-scan":
                 action = CodeScanAction(event)
                 await action.run()
+            elif ACTION_TYPE == "doc-gen":
+                from src.doc_gen_manager import DocGenManager
+                import os
+
+                repo_url = os.environ.get("INPUT_REPO_URL")
+                target_doc_set = os.environ.get("INPUT_TARGET_DOC_SET")
+                changelog_agent = os.environ.get("INPUT_CHANGELOG_AGENT")
+
+                if not repo_url:
+                    logger.fatal("INPUT_REPO_URL input not provided")
+                    sys.exit(1)
+
+                manager = DocGenManager(repo_url, target_doc_set, changelog_agent)
+                manager.run()
             else:
                 logger.error(f"Unknown action type: {ACTION_TYPE}")
                 sys.exit(1)

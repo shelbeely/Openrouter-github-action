@@ -30,6 +30,17 @@ inputs:
     description: 'Custom base URL for OpenAI API'
     required: false
     default: 'https://openrouter.ai/api/v1'
+  repo_url:
+    description: '(doc-gen only) The URL of the repository to document.'
+    required: false
+  target_doc_set:
+    description: '(doc-gen only) A comma-separated list of the target documentation set to generate.'
+    required: false
+    default: 'api_ref'
+  changelog_agent:
+    description: '(doc-gen only) Whether to run the changelog agent.'
+    required: false
+    default: 'false'
 
 
 runs:
@@ -43,3 +54,6 @@ runs:
     CUSTOM_PROMPT: ${{ inputs.custom-prompt }}
     MAX_TURNS: ${{ inputs.max-turns }}
     OPENAI_BASE_URL: ${{ inputs.openai-base-url }}
+    INPUT_REPO_URL: ${{ inputs.repo_url }}
+    INPUT_TARGET_DOC_SET: ${{ inputs.target_doc_set }}
+    INPUT_CHANGELOG_AGENT: ${{ inputs.changelog_agent }}
