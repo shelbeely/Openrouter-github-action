@@ -94,11 +94,13 @@ def create_issue_analyze_agent(
         list_repository_files,
     ]
 
+    provider = OpenAIProvider(base_url=base_url)
+    model = provider.get_model(model)
+
     return Agent(
         name="Issue Analysis Agent",
         instructions=instructions,
         tools=tools,
         model=model,
         output_type=IssueAnalysisResponse,
-        run_config={"model_provider": OpenAIProvider(base_url=base_url)},
     )

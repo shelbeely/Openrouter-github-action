@@ -32,7 +32,11 @@ def test_pr_review_init(mock_create_agent, mock_event):
 
     assert action.event == mock_event
     assert action.agent == mock_agent
-    mock_create_agent.assert_called_once()
+    mock_create_agent.assert_called_once_with(
+        model="gpt-4o-mini",
+        custom_prompt=None,
+        base_url="https://openrouter.ai/api/v1",
+    )
 
 
 @pytest.mark.asyncio

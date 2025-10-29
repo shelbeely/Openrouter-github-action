@@ -1,6 +1,7 @@
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from agents.models.interface import Model
 from pydantic import ValidationError
 
 from src.actions.code_scan import CodeScanAction
@@ -283,19 +284,27 @@ async def test_code_scan_run_agent_exception(
     assert mock_logger.critical.call_args[1]["exc_info"] is True
 
 
-def test_create_code_scan_agent():
+@patch("src.github_agents.code_scan_agent.OpenAIProvider")
+def test_create_code_scan_agent(mock_provider):
     """Test creation of code scan agent."""
+    # Mock the model to be an instance of agents.models.interface.Model
+    mock_model = MagicMock(spec=Model)
+    mock_provider.return_value.get_model.return_value = mock_model
     agent = create_code_scan_agent(model="test-model")
 
     assert agent.name == "Code Scan Agent"
     assert "code scan agent" in agent.instructions.lower()
     assert len(agent.tools) == 6
-    assert agent.model == "test-model"
+    assert agent.model == mock_model
     assert agent.output_type == CodeScanResponse
 
 
-def test_create_code_scan_agent_with_custom_prompt():
+@patch("src.github_agents.code_scan_agent.OpenAIProvider")
+def test_create_code_scan_agent_with_custom_prompt(mock_provider):
     """Test creation of code scan agent with custom prompt."""
+    # Mock the model to be an instance of agents.models.interface.Model
+    mock_model = MagicMock(spec=Model)
+    mock_provider.return_value.get_model.return_value = mock_model
     custom_prompt = "Custom test prompt"
     agent = create_code_scan_agent(model="test-model", custom_prompt=custom_prompt)
 

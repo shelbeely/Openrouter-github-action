@@ -1,3 +1,7 @@
+from unittest.mock import MagicMock, patch
+
+from agents.models.interface import Model
+
 from src.github_agents.issue_analyze_agent import (
     IssueAnalysisResponse,
     IssueCategory,
@@ -53,18 +57,21 @@ def test_issue_analysis_response_model():
     assert response.next_steps == ["Fix the bug", "Add tests"]
 
 
-def test_create_issue_analyze_agent():
+@patch("src.github_agents.issue_analyze_agent.OpenAIProvider")
+def test_create_issue_analyze_agent(mock_provider):
     """Test that the agent creation function works with the default model."""
+    mock_model = MagicMock(spec=Model)
+    mock_provider.return_value.get_model.return_value = mock_model
     agent = create_issue_analyze_agent()
     assert agent.name == "Issue Analysis Agent"
-    assert agent.model == "gpt-4o-mini"
+    assert agent.model == mock_model
     assert agent.output_type == IssueAnalysisResponse
 
     # Test with custom model and prompt
-    custom_model = "gpt-4o"
+    custom_model_name = "gpt-4o"
     custom_prompt = "Custom prompt for testing"
 
-    agent = create_issue_analyze_agent(model=custom_model, custom_prompt=custom_prompt)
+    agent = create_issue_analyze_agent(model=custom_model_name, custom_prompt=custom_prompt)
     assert agent.name == "Issue Analysis Agent"
-    assert agent.model == custom_model
+    assert agent.model == mock_model
     assert agent.output_type == IssueAnalysisResponse
